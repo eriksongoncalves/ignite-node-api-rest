@@ -1,14 +1,15 @@
 import fastify from 'fastify'
-import { knex } from './database'
+import cookie from '@fastify/cookie'
+
 import { env } from './env'
+import { transactionRoutes } from './routes/transactions'
 
 const app = fastify()
+app.register(cookie)
 
-app.get('/hello', async () => {
-  const transaction = await knex('transactions').select('*')
-
-  return transaction
+app.register(transactionRoutes, {
+  prefix: 'transactions'
 })
 
 // eslint-disable-next-line no-console
-app.listen({ port: env.PORT }).then(() => console.log('Server running...'))
+app.listen({ port: +env.PORT }).then(() => console.log('Server running...'))
